@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+	<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>0 - CodeCliker</title>
+
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+	</head>
+	<body class="bg-dark">
+		<!-- Page initial -->
+		<div id="startContainer">
+			<div class="container p-5">
+				<h1 class="display-4 text-truncate text-white text-center">CodeClicker</h1>
+				<p class="text-light text-center lead">
+					CodeClicker est un incremental game, cliquez sur le clavier pour écrire une ligne de code, achetez des générateurs grâce aux lignes de code que vous avez écrites pour cliquer à votre place ! 
+				</p>
+				<div class="row mt-4">
+					<div class="col-xs-12 col-md-6 offset-md-3">
+						<div class="card">
+							<div class="card-body">
+								<form id="formPlayername">
+									<div class="form-group">
+										<label for="inputPlayername">Pseudo</label>
+										<input type="text" class="form-control" id="inputPlayername" aria-describedby="playernameHelp" placeholder="Entrez un pseudo" required>
+										<small id="playernameHelp" class="form-text text-muted">Le pseudo servira à sauvegarder et afficher votre score sur le leaderboard</small>
+									</div>
+									<button type="submit" class="btn btn-primary">Jouer</button>
+								</form>
+							</div>
+						  </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Page du jeu -->
+		<main id="gameContainer" role="main" style="display: none;">
+			<section>
+				<div class="container text-center p-3">
+					<h1>CodeClicker</h1>
+				</div>
+			</section>
+		
+			<section>
+				<table class="table table-bordered mb-0">
+					<thead class="thead-dark text-center">
+						<tr>
+							<th class="p-3 col-xs-12 col-md-4">LIGNES DE CODE ECRITES</th>
+							<th class="p-3 col-xs-12 col-md-4">LIGNES DE CODE PAR SEC</th>
+							<th class="p-3 col-xs-12 col-md-4">GENERATEURS</th>
+						</tr>
+					</thead>
+					<tbody class="text-center">
+						<tr>
+							<td class="p-3">
+								<h3 id="nbUnit">0</h3>
+							</td>
+							<td class="p-3">
+								<h3 id="nbClickSec">0</h3>
+							</td>
+							<td class="p-3">
+								<h3 id="nbGenerator">0</h3>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</section>
+			
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-12 col-md-3 pr-0 pl-0">
+						<table class="table table-hover text-center" id="leaderboard">
+							<thead class="thead-dark">
+								<tr>
+									<th class="text-center mb-0" colspan="2"><h3>Leaderboard</h3></th>
+								</tr>
+								<tr>
+									<th>Pseudo</th>
+									<th>Lines of code</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+					<div class="col-xs-12 col-md-4">
+						<div class="screen_anim p-0">
+							<canvas id="anim_matrix"></canvas>
+						</div>
+	
+						<img class="mt-1" id="btnClick" src="/images/keyboard.png" />
+						
+						<div class="row mt-4">
+							<div class="col-xs-12 col-md-6">
+								<button class="btn btn-primary btn-block" id="btnLoadSave">Load game save</button>
+							</div>
+							<div class="col-xs-12 col-md-6">
+								<button class="btn btn-primary btn-block" id="btnSaveGame">Save game</button>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 col-md-5" id="generatorsList">
+						<!-- GENERATORS WILL BE HERE -->
+					</div>
+				</div>
+			</div>
+		</main>
+
+		<div id="templates" style="display: none !important;">
+			<!-- Template pour un générateur -->
+			<div id="template_generator">
+				<div class="row bg-dark text-white" id="{{genId}}" style="margin-bottom: 2px;">
+					<div class="col-xs-12 col-sm-2 p-2 align-self-center">
+						<img class="w-50 mx-auto d-block" src="{{objImg}}" />
+					</div>
+				    <div class="col-xs-12 col-sm-6 p-3 align-self-center">
+						<p class="mb-0">
+							{{objName}}
+							<br />
+							Prix: <span class="{{genPrice}}">{{objCurrentCost}}</span>
+						</p>
+				    </div>
+					<div class="col-xs-12 col-sm-2 text-center p-3 align-self-center">
+						<p class="mb-0">Nombre<br /><span class="{{genNum}}">{{objNumber}}</span></p>
+					</div>
+					<div class="col-xs-12 col-sm-2 p-0">
+						<button class="btn btn-danger btn-lg btn-block h-100 m-0 btnBuy" id="{{genBuy}}" onclick="buyGenerator('{{index}}')" disabled="true">+1</button>
+					</div>
+					<!-- Generator tooltip -->
+					<div class="pt-2 pb-2 pl-4 pr-4" id="generator_tooltip_{{index}}">
+						<p class="mb-1"><strong>{{objName}}</strong></p>
+
+						<p class="mb-0">Gain: <strong>{{objWin}}</strong></p>
+						<p class="mb-0">Coût: <strong><span class="{{genPrice}}">{{objCurrentCost}}</span></strong></p>
+						<p class="mb-0">Nombre: <strong><span class="{{genNum}}">{{objNumber}}</span></strong></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="snackbar">
+			<p class="m-0" id="snackbar_text"></p>
+		</div>
+
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/tippy.all.min.js"></script>
+		<script type="text/javascript" src="js/decimal.min.js"></script>
+		
+		<script type="text/javascript" src="js/utils.js"></script>
+		<script type="text/javascript" src="js/game.js"></script>
+	</body>
+ </html> 
